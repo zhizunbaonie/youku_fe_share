@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)http://10.5.111.2:8083/doc/tudou-frontend-architecture/#7 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>优酷主站前端架构</title>
+<script src="youku_fe_files/slides.js"></script>
+<style>
+
+</style>
+<meta name="viewport" content="width=1100,height=750"><meta name="apple-mobile-web-app-capable" content="yes"></head>
+
+<body style="display: none" class="loaded">
+
+<section class="slides layout-widescreen template-default">
+<!-- start ============================================ -->
+
+<article class="">
+    <h1>优酷主站前端架构</h1>
+    <p></p>
+</article>
+
+<article class="">
+    <h3>概要</h3>
+    <ul>
+        <li>架构图</li>
+        <li>代码结构</li>
+		<li>开发</li>
+        <li>调试</li>
+        <li>构建</li>
+        <li>发布</li>
+        <li>前端版本化</li>
+    </ul>
+</article>
+
+<article class="">
+    <h3>架构图</h3>
+    <a href="youku_fe_files/v3.jpg" target="_blank"><img src="youku_fe_files/v3.jpg" width="600"></a>
+</article>
+
+<article class="far-past">
+    <h2>代码结构</h2>
+</article>
+
+<article class="past">
+    <h3>基于第三方类库</h3>
+    <ul>
+        <li>PC：基于jQuery</li>
+        <li>移动：基于Zepto</li>
+        <li>模块化：AMD标准，基于OzJS</li>
+        <li>JS模板：artTemplate</li>
+        <li>CSS：LESS</li>
+    </ul>
+</article>
+
+<article class="past">
+    <h3>OZJS</h3>
+    <p><a href="http://ozjs.org">http://ozjs.org</a></p>
+    <a href="youku_fe_files/ozjs.jpg" target="_blank"><img src="youku_fe_files/ozjs.jpg" width="600"></a>
+</article>
+
+<article class="current">
+    <h3>Class Module</h3>
+    <pre class="prettyprint"><span class="com">// src/js/tui/class.js</span><span class="pln">
+define</span><span class="pun">(</span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">function</span><span class="pln"> extend</span><span class="pun">(</span><span class="pln">protoProps</span><span class="pun">,</span><span class="pln"> staticProps</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> </span><span class="typ">Class</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">protoProps</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="pun">};</span><span class="pln">
+    </span><span class="typ">Class</span><span class="pun">.</span><span class="pln">extend </span><span class="pun">=</span><span class="pln"> extend</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">Class</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">});</span></pre>
+</article>
+
+<article class="next">
+    <h3>Event Module</h3>
+    <pre class="prettyprint"><span class="com">// src/js/tui/event.js</span><span class="pln">
+define</span><span class="pun">([</span><span class="str">'tui/class'</span><span class="pun">],</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="typ">Class</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> </span><span class="typ">Event</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Class</span><span class="pun">({</span><span class="pln">
+        initialize </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        bind </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        unbind </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        trigger </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">});</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">Event</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">});</span></pre>
+</article>
+
+<article class="far-next">
+    <h3>Dialog Module</h3>
+    <pre class="prettyprint"><span class="com">// src/js/tui/dialog.js</span><span class="pln">
+define</span><span class="pun">([</span><span class="pln">
+    </span><span class="str">'tui/browser'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'tui/art'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'tui/mask'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'tui/widget'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'tui/drag'</span><span class="pln">
+</span><span class="pun">],</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="typ">Browser</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Art</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Mask</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Widget</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Drag</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">var</span><span class="pln"> </span><span class="typ">Dialog</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Widget</span><span class="pun">.</span><span class="pln">extend</span><span class="pun">({</span><span class="pln">
+        initialize </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">config</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        open </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        close </span><span class="pun">:</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">});</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">Dialog</span><span class="pun">;</span><span class="pln">
+</span><span class="pun">});</span><span class="pln">
+</span></pre>
+</article>
+
+<article class="">
+    <h3>模块的加载启动</h3>
+    <pre class="prettyprint"><span class="com">// src/js/page/play/main.js</span><span class="pln">
+</span><span class="kwd">require</span><span class="pun">([</span><span class="pln">
+    </span><span class="str">'g'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'module/login/login'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'./hylogin'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'./ugclogin'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'module/domain'</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">'module/global'</span><span class="pln">
+</span><span class="pun">],</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">
+    G</span><span class="pun">,</span><span class="pln">
+    login</span><span class="pun">,</span><span class="pln">
+    </span><span class="typ">HyLogin</span><span class="pun">,</span><span class="pln">
+    </span><span class="typ">UgcLogin</span><span class="pun">,</span><span class="pln">
+    </span><span class="typ">Domain</span><span class="pun">,</span><span class="pln">
+    </span><span class="kwd">global</span><span class="pln">
+</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// 各种初始化</span><span class="pln">
+</span><span class="pun">});</span></pre>
+</article>
+
+<article class="">
+    <h2>开发</h2>
+</article>
+
+<article class="">
+    <h3>开发流程</h3>
+    <ol>
+        <li>
+			在分支上开发、调试，<a href="http://gitlab.intra.tudou.com/static/youku/network/master" target="_blank">Git Network graph</a>
+			<pre class="prettyprint"><span class="pln">git branch branchName</span></pre>
+		</li>
+        <li>
+			测试阶段合并到 develop
+			<pre class="prettyprint"><span class="pln">git checkout develop
+git pull </span><span class="pun">--</span><span class="pln">rebase origin develop
+git merge </span><span class="pun">--</span><span class="kwd">no</span><span class="pun">-</span><span class="pln">ff branchName</span></pre></li>
+        <li>
+			上线前合并到 master
+			<pre class="prettyprint"><span class="pln">git checkout master
+git pull </span><span class="pun">--</span><span class="pln">rebase origin master
+git merge </span><span class="pun">--</span><span class="kwd">no</span><span class="pun">-</span><span class="pln">ff branchName</span></pre></li>
+    </ol>
+</article>
+
+<article class="">
+    <h2>调试</h2>
+</article>
+
+<article class="">
+    <h3>配置调试环境</h3>
+    <ol>
+        <li>安装 hrt：<strong>npm install hrt -g</strong></li>
+        <li>修改浏览器代理：IP：127.0.0.1，端口：2222，用SwitchySharp（Chrome插件）、FoxyProxy（Firefox插件）</li>
+        <li>启动调试服务：<strong>hrt hrt-config.js --port=2222</strong></li>
+    </ol>
+</article>
+
+<article class="">
+    <h3>hrt-config.js</h3>
+    <pre class="prettyprint"><span class="com">// URL跳转规则</span><span class="pln">
+exports</span><span class="pun">.</span><span class="pln">map </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">[</span><span class="str">'http://js.ykimg.com/v3/dist'</span><span class="pun">,</span><span class="pln"> localRoot </span><span class="pun">+</span><span class="pln"> </span><span class="str">'/src'</span><span class="pun">],</span><span class="pln">
+    </span><span class="pun">[</span><span class="str">'http://css.ykimg.com/v3/dist'</span><span class="pun">,</span><span class="pln"> localRoot </span><span class="pun">+</span><span class="pln"> </span><span class="str">'/src'</span><span class="pun">],</span><span class="pln">
+    </span><span class="pun">[</span><span class="str">'http://jstest.ykimg.com/v3/src'</span><span class="pun">,</span><span class="pln"> localRoot </span><span class="pun">+</span><span class="pln"> </span><span class="str">'/src'</span><span class="pun">],</span><span class="pln">
+    </span><span class="pun">[</span><span class="str">'http://csstest.ykimg.com/v3/src'</span><span class="pun">,</span><span class="pln"> localRoot </span><span class="pun">+</span><span class="pln"> </span><span class="str">'/src'</span><span class="pun">],</span><span class="pln">
+</span><span class="pun">];</span><span class="pln">
+</span><span class="com">// 修改URL</span><span class="pln">
+exports</span><span class="pun">.</span><span class="pln">before </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">url</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> url</span><span class="pun">.</span><span class="pln">replace</span><span class="pun">(</span><span class="str">/([^?]+)_\d+(\.(?:js|css))/</span><span class="pun">,</span><span class="pln"> </span><span class="str">'$1$2'</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">};</span><span class="pln">
+</span><span class="com">// 修改文件内容</span><span class="pln">
+exports</span><span class="pun">.</span><span class="pln">merge </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">function</span><span class="pun">(</span><span class="pln">path</span><span class="pun">,</span><span class="pln"> callback</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> readFileSync</span><span class="pun">(</span><span class="pln">path</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">};</span></pre>
+</article>
+
+<article class="">
+    <h3>调试窗口</h3>
+    <br>
+    <img src="youku_fe_files/hrt.jpg" width="700">
+</article>
+
+<article class="">
+    <h2>构建</h2>
+</article>
+
+<article class="">
+    <h3>配置构建环境</h3>
+    <ol>
+        <li>安装 tpm：<strong>npm install tpm -g</strong></li>
+        <li>打包JS：<strong>ytpm src/js/g.js</strong></li>
+        <li>打包CSS：<strong>ytpm src/css/g.less</strong></li>
+    </ol>
+</article>
+
+<article class="">
+    <h3>tpm-config.js</h3>
+    <pre class="prettyprint"><span class="pln">exports</span><span class="pun">.</span><span class="pln">main </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="str">"js"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="str">"lib.js"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"g.js"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"page/play/main.js"</span><span class="pun">,</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    </span><span class="str">"css"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="str">"g.less"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"play/main.less"</span><span class="pun">,</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+</span><span class="pun">};</span></pre>
+</article>
+
+<article class="">
+    <h2>发布</h2>
+</article>
+
+<article class="">
+    <h3>Chips for Git</h3>
+    <br>
+    <img src="youku_fe_files/sdm-git.jpg" width="700">
+</article>
+
+<article class="">
+    <h3>sdm-config.json</h3>
+    <pre class="prettyprint"><span class="pun">{</span><span class="pln">
+    </span><span class="str">"project"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"play"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"title"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="str">"播放页"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"files"</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+                </span><span class="str">"js/page/play/**/*"</span><span class="pun">,</span><span class="pln">
+                </span><span class="str">"css/play/**/*"</span><span class="pun">,</span><span class="pln">
+                </span><span class="str">"img/**/*"</span><span class="pun">,</span><span class="pln">
+                </span><span class="str">"embed/**/*"</span><span class="pln">
+            </span><span class="pun">]</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></pre>
+</article>
+
+
+<article class="">
+    <h3>发布流程</h3>
+    <br>
+    <ol>
+        <li>对比master和线上版本</li>
+        <li>生成要发布的文件列表</li>
+        <li>测试环境直接发布，线上环境打包成zip文件</li>
+    </ol>
+</article>
+
+<article class="">
+    <h2>前端版本化</h2>
+</article>
+
+<article class="">
+    <h3>VM引入CSS/JS</h3>
+    <br>
+    <p>CSS</p>
+    <pre class="prettyprint"><span class="tag">&lt;link</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"$static.getURL('/youku/dist/css/g.css')"</span><span class="pln"> </span><span class="atn">rel</span><span class="pun">=</span><span class="atv">"stylesheet"</span><span class="tag">/&gt;</span></pre>
+<p>JS</p>
+    <pre class="prettyprint"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"$static.getURL('/youku/dist/js/g.js')"</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
+    <pre class="prettyprint"><span class="tag">&lt;script&gt;</span><span class="pln">$static</span><span class="pun">.</span><span class="pln">getContent</span><span class="pun">(</span><span class="str">'/youku/dist/js/g.js'</span><span class="pun">)</span><span class="tag">&lt;/script&gt;</span></pre>
+</article>
+
+<article class="">
+    <h3>HTML输出</h3>
+    <br>
+    <p>CSS</p>
+    <pre class="prettyprint"><span class="tag">&lt;link</span><span class="pln"> </span><span class="atn">href</span><span class="pun">=</span><span class="atv">"http://css.ykimg.com/youku/dist/css/g_1.css"</span><span class="pln"> </span><span class="atn">rel</span><span class="pun">=</span><span class="atv">"stylesheet"</span><span class="tag">/&gt;</span></pre>
+<p>JS</p>
+    <pre class="prettyprint"><span class="tag">&lt;script</span><span class="pln"> </span><span class="atn">src</span><span class="pun">=</span><span class="atv">"http://js.ykimg.com/youku/dist/js/g_1.js"</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
+    <pre class="prettyprint"><span class="tag">&lt;script&gt;</span><span class="com">/* JavaScript 代码 */</span><span class="tag">&lt;/script&gt;</span></pre>
+</article>
+
+<article class="">
+    <h3>版本化流程</h3>
+    <br>
+    <ol>
+        <li>上传前端文件（g.js）</li>
+        <li>生成新文件，上一个版本加1（g_1.js）</li>
+        <li>更新配置文件（version.properties、versionconfig.properties）</li>
+        <li>同步到各CDN服务器</li>
+        <li>后端抓取配置文件，更新URL</li>
+    </ol>
+</article>
+
+<article class="">
+    <h3>版本配置</h3>
+    <br>
+    <p>http://commconf.hgh.tudou.com/staticconf/version.properties</p>
+    <pre class="prettyprint"><span class="str">/youku/</span><span class="pln">dist</span><span class="pun">/</span><span class="pln">js</span><span class="pun">/</span><span class="pln">g</span><span class="pun">.</span><span class="pln">js</span><span class="pun">=</span><span class="str">/v3/</span><span class="pln">dist</span><span class="pun">/</span><span class="pln">js</span><span class="pun">/</span><span class="pln">g_1</span><span class="pun">.</span><span class="pln">js
+</span><span class="pun">/</span><span class="pln">youku</span><span class="pun">/</span><span class="pln">dist</span><span class="pun">/</span><span class="pln">css</span><span class="pun">/</span><span class="pln">g</span><span class="pun">.</span><span class="pln">css</span><span class="pun">=</span><span class="str">/v3/</span><span class="pln">dist</span><span class="pun">/</span><span class="pln">js</span><span class="pun">/</span><span class="pln">g_1</span><span class="pun">.</span><span class="pln">css
+</span><span class="pun">....</span></pre>
+<p>http://10.10.72.59:89/static_res/versions</p>
+    <pre class="prettyprint"><span class="pln">reloadRate</span><span class="pun">=</span><span class="lit">60</span><span class="pln">
+autoReload</span><span class="pun">=</span><span class="kwd">true</span><span class="pln">
+autoReloadNavi</span><span class="pun">=</span><span class="kwd">true</span><span class="pln">
+staticServer</span><span class="pun">=</span><span class="pln">http</span><span class="pun">:</span><span class="com">//css.ykimg.com</span><span class="pln">
+jsStaticServer</span><span class="pun">=</span><span class="pln">http</span><span class="pun">:</span><span class="com">//js.ykimg.com</span></pre>
+</article>
+
+<article class="biglogo">
+    <h3>有什么想问的</h3>
+    <p>Q&A</p>
+</article>
+
+<!-- end ============================================== -->
+<div class="slide-area" id="prev-slide-area"></div><div class="slide-area" id="next-slide-area"></div></section>
+
+
+
+<link rel="stylesheet" type="text/css" href="youku_fe_files/styles.css"><script type="text/javascript" src="youku_fe_files/prettify.js"></script></body></html>
